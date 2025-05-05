@@ -28,7 +28,7 @@ class FilamentOneSignalServiceProvider extends ServiceProvider
                     window.OneSignal = window.OneSignal || [];
                     OneSignal.push(function() {
                         OneSignal.init({
-                            appId: "YOUR-ONESIGNAL-APP-ID",
+                            appId: "bee43dc7-0fee-4dc4-a338-3d9f2abb755c",
                             notifyButton: {
                                 enable: true,
                             },
