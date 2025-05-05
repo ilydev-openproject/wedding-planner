@@ -41,7 +41,10 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->label('Password')
                     ->password()
-                    ->required(fn($get) => !$get('google_id')),
+                    ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null) // hanya hash kalau ada input
+                    ->dehydrated(fn($state) => filled($state)) // hanya simpan jika tidak kosong
+                    ->nullable(),
+
 
                 Forms\Components\DatePicker::make('wedding_date')
                     ->label('Tanggal Pernikahan')
@@ -50,6 +53,23 @@ class UserResource extends Resource
                 Forms\Components\Toggle::make('is_active')
                     ->label('Aktif')
                     ->default(true),
+
+                Forms\Components\Select::make('role')
+                    ->label('Role')
+                    ->options(Role::all()->pluck('name', 'name')) // gunakan nama sebagai value
+                    ->searchable()
+                    ->required()
+                    ->afterStateHydrated(function ($component, $state, $record) {
+                        if ($record) {
+                            $component->state($record->getRoleNames()->first());
+                        }
+                    })
+                    ->dehydrated()
+                    ->afterStateUpdated(function ($state, $set, $record) {
+                        if ($record) {
+                            $record->syncRoles([$state]);
+                        }
+                    }),
             ]);
     }
 
