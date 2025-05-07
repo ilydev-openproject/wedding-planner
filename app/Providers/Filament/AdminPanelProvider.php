@@ -66,6 +66,10 @@ class AdminPanelProvider extends PanelProvider
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 // \TomatoPHP\FilamentPWA\FilamentPWAPlugin::make()
             ])
+            ->navigationGroups([
+                'Master Data',
+                'Details',
+            ])
             ->authMiddleware([
                 Authenticate::class,
             ]);

@@ -9,23 +9,32 @@ use Filament\Forms\Form;
 use App\Models\Checklist;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
+use Kreait\Firebase\Contract\Messaging;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\BooleanColumn;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 use App\Filament\Resources\ChecklistResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Notifications\Notification as filNotif;
 use App\Filament\Resources\ChecklistResource\RelationManagers;
 
 class ChecklistResource extends Resource
 {
     protected static ?string $model = Checklist::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+
+    protected static ?string $navigationGroup = 'Details';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -87,6 +96,25 @@ class ChecklistResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Action::make('sendNotification')
+                    ->label('Kirim Notifikasi')
+                    ->action(function () {
+                        $messaging = app(Messaging::class);
+                        $topic = 'your-topic'; // Ganti dengan topik Anda
+                        $title = 'Notifikasi Baru';
+                        $body = 'Ini adalah pesan notifikasi';
+
+                        $message = CloudMessage::withTarget('topic', $topic)
+                            ->withNotification(Notification::create($title, $body));
+
+                        $messaging->send($message);
+
+                        filNotif::make()
+                            ->title('Notifikasi Terkirim!')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -30,17 +30,7 @@ class CategorySeeder extends Seeder
             ['name' => 'Makeup Artist', 'is_for_vendor' => true, 'is_for_budget' => true],
         ];
 
-        $users = User::all();
 
-        foreach ($users as $user) {
-            foreach ($categoryTemplates as $template) {
-                Category::create([
-                    'user_id' => $user->id,
-                    'name' => $template['name'],
-                    'is_for_vendor' => $template['is_for_vendor'],
-                    'is_for_budget' => $template['is_for_budget'],
-                ]);
-            }
-        }
+
     }
 }

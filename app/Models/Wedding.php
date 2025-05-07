@@ -20,8 +20,9 @@ class Wedding extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function tasks()
+    public function guests()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Guest::class);
     }
+
 }

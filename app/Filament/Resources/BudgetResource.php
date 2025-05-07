@@ -23,7 +23,11 @@ class BudgetResource extends Resource
 {
     protected static ?string $model = Budget::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calculator';
+
+    protected static ?string $navigationGroup = 'Master Data';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -31,6 +35,9 @@ class BudgetResource extends Resource
             ->schema([
                 Hidden::make('user_id')->default(auth()->id()),
 
+                TextInput::make('notes')
+                    ->label('Catatan')
+                    ->nullable(),
                 Select::make('category_id')
                     ->label('Kategori')
                     ->relationship('category', 'name', fn($query) => $query->where('is_for_budget', true))
@@ -67,10 +74,6 @@ class BudgetResource extends Resource
                     ->default(0)
                     ->prefix('Rp'),
 
-                Textarea::make('notes')
-                    ->label('Catatan')
-                    ->rows(2)
-                    ->nullable(),
                 Select::make('vendor_id')
                     ->label('Vendor Terkait')
                     ->relationship('vendor', 'name')

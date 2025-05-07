@@ -1,12 +1,16 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Livewire\UserActivationPage;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Filament\Resources\ChecklistResource;
+use App\Http\Controllers\GoogleCalendarController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('calendar/add/{checklist_id}', [GoogleCalendarController::class, 'addEvent'])->name('calendar.add');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -22,6 +26,8 @@ use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+Route::get('calendar/add/{checklist_id}', [GoogleCalendarController::class, 'addEvent'])
+    ->name('calendar.add');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/aktivasi', UserActivationPage::class)->name('aktivasi');
